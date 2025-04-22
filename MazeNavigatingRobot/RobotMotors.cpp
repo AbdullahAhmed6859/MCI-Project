@@ -38,7 +38,7 @@ void RobotMotors::setSpeed(int leftSpeed, int rightSpeed) {
   analogWrite(enRight, rightSpeed);
 }
 
-void RobotMotors::forward(int ms) {
+void RobotMotors::forward(int ms, bool stop) {
   digitalWrite(motorLeftFwd, HIGH);
   digitalWrite(motorLeftBwd, LOW);
   digitalWrite(motorRightFwd, HIGH);
@@ -46,11 +46,12 @@ void RobotMotors::forward(int ms) {
 
   if (ms > 0) {
     delay(ms);
-    stop();
+    if (stop)
+      stopMotors();
   }
 }
 
-void RobotMotors::backward(int ms) {
+void RobotMotors::backward(int ms, bool stop) {
   digitalWrite(motorLeftFwd, LOW);
   digitalWrite(motorLeftBwd, HIGH);
   digitalWrite(motorRightFwd, LOW);
@@ -58,11 +59,12 @@ void RobotMotors::backward(int ms) {
 
   if (ms > 0) {
     delay(ms);
-    stop();
+    if (stop)
+      stopMotors();
   }
 }
 
-void RobotMotors::left(int ms) {
+void RobotMotors::left(int ms, bool stop) {
   digitalWrite(motorLeftFwd, LOW);
   digitalWrite(motorLeftBwd, HIGH);
   digitalWrite(motorRightFwd, HIGH);
@@ -70,11 +72,12 @@ void RobotMotors::left(int ms) {
 
   if (ms > 0) {
     delay(ms);
-    stop();
+    if (stop)
+      stopMotors();
   }
 }
 
-void RobotMotors::right(int ms) {
+void RobotMotors::right(int ms, bool stop) {
   digitalWrite(motorLeftFwd, HIGH);
   digitalWrite(motorLeftBwd, LOW);
   digitalWrite(motorRightFwd, LOW);
@@ -82,17 +85,17 @@ void RobotMotors::right(int ms) {
 
   if (ms > 0) {
     delay(ms);
-    stop();
+    if (stop)
+      stopMotors();
   }
 }
 
-void RobotMotors::stop(int ms) {
+void RobotMotors::stopMotors(int ms) {
   digitalWrite(motorLeftFwd, LOW);
   digitalWrite(motorLeftBwd, LOW);
   digitalWrite(motorRightFwd, LOW);
   digitalWrite(motorRightBwd, LOW);
 
-  if (ms > 0) {
+  if (ms > 0)
     delay(ms);
-  }
 }

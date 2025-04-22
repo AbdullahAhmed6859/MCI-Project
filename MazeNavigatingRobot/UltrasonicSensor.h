@@ -21,6 +21,7 @@ class UltrasonicSensor {
   float timeOut;       // Timeout in microseconds (for limiting max distance)
   float temperature;   // Temperature in Celsius (for speed of sound adjustment)
   float speedOfSound;  // Cached speed of sound in cm/microsecond
+  float threshold;
 
   // Update speed of sound based on temperature
   void updateSpeedOfSound();

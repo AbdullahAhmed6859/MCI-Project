@@ -41,11 +41,11 @@ class RobotMotors {
   void setSpeed(int leftSpeed, int rightSpeed);
 
   // Movement functions
-  void forward(int ms = 0);
-  void backward(int ms = 0);
-  void left(int ms = 0);
-  void right(int ms = 0);
-  void stop(int ms = 0);
+  void forward(int ms = 0, bool stop = false);
+  void backward(int ms = 0, bool stop = false);
+  void left(int ms = 0, bool stop = false);
+  void right(int ms = 0, bool stop = false);
+  void stopMotors(int ms = 0);
 };
 
 #endif

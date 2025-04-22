@@ -11,7 +11,8 @@ UltrasonicSensor::UltrasonicSensor(int trig, int echo, float temp)
     : trigPin(trig),
       echoPin(echo),
       temperature(temp),
-      timeOut(30000)  // Default timeout (about 5m max distance)
+      timeOut(30000),  // Default timeout (about 5m max distance)
+      threshold(500)
 {
   // Initialize speed of sound
   updateSpeedOfSound();
@@ -49,6 +50,8 @@ float UltrasonicSensor::getDistanceCm() {
 
   // Calculate the distance using cached speed of sound
   float distance = (duration * speedOfSound) / 2.0;
+  if (distance > threshold) return 0;
+  
 
   return distance;
 }
