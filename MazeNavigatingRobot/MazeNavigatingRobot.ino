@@ -8,18 +8,20 @@ const int MOTOR_RIGHT_BWD = 32;
 const int EN_LEFT = 31;
 const int EN_RIGHT = 36;
 
-const int LEFT_SENSOR_TRIGGER = 12;
-const int LEFT_SENSOR_ECHO = 11;
+const int LEFT_SENSOR_TRIGGER = 17;
+const int LEFT_SENSOR_ECHO = 15;
 const int FRONT_SENSOR_TRIGGER = 14;
 const int FRONT_SENSOR_ECHO = 13;
-const int RIGHT_SENSOR_TRIGGER = 17;
-const int RIGHT_SENSOR_ECHO = 15;
+const int RIGHT_SENSOR_TRIGGER = 12;
+const int RIGHT_SENSOR_ECHO = 11;
 
 const float FRONT_OBSTACLE_THRESHOLD = 20.0;
 const float SIDE_OBSTACLE_THRESHOLD = 10.0;
 
 const int TURN_DURATION = 200;
 const int SOFT_TURN_DURATION = 50;
+
+bool on = false;
 
 RobotMotors robot(
   MOTOR_LEFT_FWD, MOTOR_LEFT_BWD,
@@ -53,24 +55,54 @@ void navigateRobot() {
   if (distanceFront < FRONT_OBSTACLE_THRESHOLD) {
     if (distanceLeft < distanceRight) {
       robot.left(TURN_DURATION);
-      Serial.println("Avoiding: Turning LEFT");
+      //Serial.println("Avoiding: Turning LEFT");
     } else {
       robot.right(TURN_DURATION);
-      Serial.println("Avoiding: Turning RIGHT");
+      //Serial.println("Avoiding: Turning RIGHT");
     }
   } else {
     if (distanceLeft < SIDE_OBSTACLE_THRESHOLD) {
       robot.right(SOFT_TURN_DURATION);
-      Serial.println("Soft turn RIGHT");
+      //Serial.println("Soft turn RIGHT");
     }
-    if (distanceRight < SIDE_OBSTACLE_THRESHOLD) {
+    else if (distanceRight < SIDE_OBSTACLE_THRESHOLD) {
       robot.left(SOFT_TURN_DURATION);
-      Serial.println("Soft turn LEFT");
+      //Serial.println("Soft turn LEFT");
+    } else {
+      robot.forward();
+      //Serial.println("Moving FORWARD");
     }
-    
-    robot.forward();
-    Serial.println("Moving FORWARD");
+
   }
+}
+
+void testMovements() {
+  robot.forward(1000);
+  delay(1000);
+  robot.backward(1000);
+  delay(1000);
+  robot.left(300);
+  delay(1000);
+  robot.right(300);
+  delay(1000);
+}
+
+bool getOnOffState() {
+  if (Serial.available() > 0) {
+    String input = Serial.readString();   // read entire string sent
+    input.trim();                         // remove \n or \r characters
+
+    Serial.println("Received: " + input); // debug
+
+    if (input == "OFF") {
+        on = false;
+        Serial.println("Car stopped via Bluetooth");
+    } else if (input == "ON") {
+        on = true;
+        Serial.println("Car started via Bluetooth");
+    }
+  }
+  return on;
 }
 
 void setup() {
@@ -82,13 +114,19 @@ void setup() {
   rightSensor.begin();
   
   delay(2000);
-  robot.forward();
+  
 }
 
 void loop() {
+//  testMovements();
   updateSensorDistances();
   printSensorDistances();
-  navigateRobot();
+  on = getOnOffState();
   
+  if (on){
+    navigateRobot();
+  } else {
+    robot.stop();
+  }
   delay(20);
 }
